@@ -16,6 +16,10 @@ class GameOfLife:
         self.color_fg = (230, 230, 230)
         self.cells = np.full((self.divisions, self.divisions), False, dtype=bool)
         self.paused = False
+    
+    def reset(self):
+        self.cells = np.full((self.divisions, self.divisions), False, dtype=bool)
+        self.paused = False
 
     def play(self):
         clock = pygame.time.Clock()
@@ -39,15 +43,18 @@ class GameOfLife:
                 self.draw()
                 pygame.display.update()
                 sleep(0.2)
+            if keys[pygame.K_F1]:
+                self.reset()
             
             if self.paused:
                 if pygame.mouse.get_pressed()[0]:
                     pos = pygame.mouse.get_pos()
                     pos = [pos[0] // self.length, pos[1] // self.length]
-                    self.cells[pos[0], pos[1]] = not self.cells[pos[0], pos[1]]
+                    self.cells[pos[0], pos[1]] = True
                 continue
 
             if self.counter % (self.fps // self.interval) == 0:
+
                 neighbors_count = np.full((self.divisions + 2, self.divisions + 2), 0, dtype=np.int8)
                 
                 for i in range(self.divisions):
